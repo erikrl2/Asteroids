@@ -1,0 +1,33 @@
+using System.Collections;
+using Unity.VisualScripting;
+using UnityEngine;
+
+public class Cannon : MonoBehaviour
+{
+	[SerializeField] private Rigidbody2D projectile;
+	[SerializeField] private float bulletSpeed = 10;
+	[SerializeField] private float fireRate = .5f;
+
+	private bool allowFire = true;
+
+	private void Update()
+    {
+		if (Input.GetKey(KeyCode.Space) && allowFire)
+		{
+			StartCoroutine(Fire());
+		}
+	}
+
+	private IEnumerator Fire()
+	{
+		allowFire = false;
+
+		GetComponent<Animator>().Play("Fire");
+		Vector2 forwardDir = GetComponentInParent<Player>().GetForwardDir();
+		Rigidbody2D bullet = Instantiate(projectile, transform.position, transform.rotation);
+		bullet.velocity = forwardDir * bulletSpeed;
+
+		yield return new WaitForSeconds(fireRate);
+		allowFire = true;
+	}
+}
