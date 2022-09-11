@@ -9,10 +9,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8829167168706216333}
+  - component: {fileID: 4346247806718256555}
   - component: {fileID: 6974370276685914253}
   - component: {fileID: 6894767911706069619}
   - component: {fileID: 1576438625276789994}
-  - component: {fileID: 4346247806718256555}
   m_Layer: 0
   m_Name: Projectile
   m_TagString: Projectile
@@ -35,6 +35,19 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &4346247806718256555
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3392289829826729168}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dcbf6fb2e06f4a14b9476fc4cffbe1d3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Damage: 250
 --- !u!70 &6974370276685914253
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
@@ -124,16 +137,3 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &4346247806718256555
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3392289829826729168}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: dcbf6fb2e06f4a14b9476fc4cffbe1d3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Damage: 250

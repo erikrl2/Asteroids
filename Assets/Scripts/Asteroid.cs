@@ -5,8 +5,9 @@ public class Asteroid : MonoBehaviour
     [SerializeField] private GameObject explosionPrefab;
 
 	public int hp = 1000;
+	public float speed = 1;
 
-    private GameObject explosion;
+	private GameObject explosion;
     private Animator animator;
     private AsteroidHealthbar healthBar;
 
@@ -22,8 +23,10 @@ public class Asteroid : MonoBehaviour
         {
             Destroy(explosion);
             Destroy(gameObject);
-			GameWorld.asteroidCount--;
+			GameHandler.asteroidCount--;
         }
+
+        GetComponent<Rigidbody2D>().velocity = new(0, -speed);
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -37,6 +40,12 @@ public class Asteroid : MonoBehaviour
             collision.GetComponent<Player>().IsHit();
 		}
     }
+
+	private void OnBecameInvisible()
+	{
+		Destroy(gameObject);
+		GameHandler.asteroidCount--;
+	}
 
     private void OnAsteroidHit(Collider2D projectile)
     {
