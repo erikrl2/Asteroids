@@ -1,13 +1,16 @@
+using System.Collections;
 using UnityEngine;
 
 public class Asteroid : MonoBehaviour
 {
     [SerializeField] private GameObject explosionPrefab;
 
-	public int hp = 1000;
-	public float speed = 1;
+    public int maxHP = 1000;
 
-	private GameObject explosion;
+    private int hp;
+
+	internal static float speed = 1.5f;
+
     private Animator animator;
     private AsteroidHealthbar healthBar;
 
@@ -15,18 +18,36 @@ public class Asteroid : MonoBehaviour
     {
         animator = GetComponent<Animator>();
 		healthBar = GetComponent<AsteroidHealthbar>();
+
+        if (Random.value < .5f)
+        {
+            maxHP /= 2;
+            Vector2 scale = transform.localScale;
+            Vector3 halfScale = new(scale.x / 2f, scale.y / 2f, 1f);
+            transform.localScale = halfScale;
+		}
+        hp = maxHP;
 	}
+
+    private void Start()
+    {
+        StartCoroutine(FollowPlayer());
+    }
 
     private void Update()
     {
         if (animator.GetCurrentAnimatorStateInfo(0).IsName("Destroyed"))
         {
-            Destroy(explosion);
             Destroy(gameObject);
-			GameHandler.asteroidCount--;
-        }
+            Player.score++;
+		}
 
-        GetComponent<Rigidbody2D>().velocity = new(0, -speed);
+        Camera cam = Camera.main;
+		Vector2 target = cam.transform.position;
+		float distToPlayerSqr = (target - (Vector2)transform.position).sqrMagnitude;
+        float halfCamWidth = cam.orthographicSize * cam.aspect;
+        if (distToPlayerSqr > halfCamWidth * halfCamWidth * 3f)
+            Destroy(gameObject);
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -35,30 +56,47 @@ public class Asteroid : MonoBehaviour
         {
             OnAsteroidHit(collision);
 		}
-        else if (collision.CompareTag("Player"))
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.collider.CompareTag("Player"))
         {
-            collision.GetComponent<Player>().IsHit();
+			collision.collider.GetComponent<Player>().IsHit();
+            if (Player.lives > 0)
+				Instantiate(explosionPrefab, collision.transform);
 		}
     }
 
-	private void OnBecameInvisible()
-	{
-		Destroy(gameObject);
+    private void OnDestroy()
+    {
 		GameHandler.asteroidCount--;
-	}
+    }
 
     private void OnAsteroidHit(Collider2D projectile)
     {
         Destroy(projectile.gameObject);
 
-        int damage = projectile.GetComponent<Projectile>().Damage;
+        int damage = projectile.GetComponent<Projectile>().damage;
         hp -= damage;
 		healthBar.LoseHealth(damage);
 
 		if (hp <= 0)
 		{
-			explosion = Instantiate(explosionPrefab, transform);
+			Instantiate(explosionPrefab, transform);
 			animator.SetTrigger("Destroy");
 		}
+    }
+
+    private IEnumerator FollowPlayer()
+    {
+        while (true)
+        {
+            Vector2 target = Camera.main.transform.position;
+            Vector2 dir = target - (Vector2)transform.position;
+            GetComponent<Rigidbody2D>().velocity = speed * dir.normalized;
+
+            yield return new WaitForSeconds(.5f);
+        }
     }
 }

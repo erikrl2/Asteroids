@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class Projectile : MonoBehaviour
 {
-	public int Damage = 250;
+	public int damage = 250;
 
 	private void OnBecameInvisible()
 	{

@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 public class Player : MonoBehaviour
@@ -6,10 +7,12 @@ public class Player : MonoBehaviour
     [SerializeField] private float rotationSpeed;
     [SerializeField] private Animator thrustFire;
 
-    public int Lives = 3;
-
     private Rigidbody2D rb;
-    private Vector2 forwardDir;
+
+	internal static int lives = 3;
+	internal static int score = 0;
+
+	internal static Vector2 forwardDir;
 
     private void Awake()
     {
@@ -18,23 +21,23 @@ public class Player : MonoBehaviour
 
     private void Update()
     {
+        CalculateForwardDir();
+
         if (Input.GetKey(KeyCode.W))
         {
-            rb.velocity = speed * forwardDir;
+            rb.AddForce(speed * forwardDir);
 			thrustFire.SetBool("Boosting", true);
         }
         else
         {
-            rb.velocity = Vector2.zero;
 			thrustFire.SetBool("Boosting", false);
         }
 
-        if (Lives == 0)
+        if (lives <= 0)
         {
-            // TODO
+			Time.timeScale = 0f;
+            EndScreen.active = true;
         }
-
-        CalculateForwardDir();
     }
 
     private void FixedUpdate()
@@ -42,21 +45,28 @@ public class Player : MonoBehaviour
         rb.rotation += rotationSpeed * -Input.GetAxisRaw("Horizontal");
     }
 
-    public Vector2 GetForwardDir()
-    {
-        return forwardDir;
-    }
-
     private void CalculateForwardDir()
     {
         float angle = Mathf.Deg2Rad * (rb.rotation + 90f);
-        forwardDir = new(Mathf.Cos(angle), Mathf.Sin(angle));
-        forwardDir.Normalize();
+        Player.forwardDir = new Vector2(Mathf.Cos(angle), Mathf.Sin(angle)).normalized;
     }
 
-    public void IsHit()
+	internal void IsHit()
     {
-		Lives--;
-        transform.position = Vector3.zero;
+		lives--;
+        StartCoroutine(Flicker());
+    }
+
+    private IEnumerator Flicker()
+    {
+		GetComponent<Collider2D>().enabled = false;
+		for (int i = 0; i < 3; i++)
+        {
+            GetComponent<SpriteRenderer>().enabled = false;
+            yield return new WaitForSeconds(.2f);
+            GetComponent<SpriteRenderer>().enabled = true;
+            yield return new WaitForSeconds(.2f);
+        }
+		GetComponent<Collider2D>().enabled = true;
     }
 }

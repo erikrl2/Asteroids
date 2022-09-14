@@ -3,17 +3,10 @@ using UnityEngine.UI;
 
 public class AsteroidHealthbar : MonoBehaviour
 {
-	[SerializeField] Image fill;
+	[SerializeField] private Image fill;
 
-	private int maxHP;
-
-	private void Awake()
+	internal void LoseHealth(int damage)
 	{
-		maxHP = GetComponent<Asteroid>().hp;
-	}
-
-	public void LoseHealth(int damage)
-	{
-		fill.fillAmount -= (float)damage / maxHP;
+		fill.fillAmount -= (float)damage / GetComponentInParent<Asteroid>().maxHP;
 	}
 }
