@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 public class GameHandler : MonoBehaviour
@@ -7,15 +8,21 @@ public class GameHandler : MonoBehaviour
 	[SerializeField] private float difficultyIncreaseInterval = 5f;
 	[SerializeField] private int maxAsteroidCount = 5;
 
-	internal static float asteroidSpawnRate = 3f;
+	internal static float asteroidSpawnInterval = 3f;
 	internal static int asteroidCount;
 	internal static float time;
 	internal static float gameStartTime;
 
-	private void Start()
+	private IEnumerator Start()
 	{
-		InvokeRepeating(nameof(SpawnAsteroid), .1f, asteroidSpawnRate);
 		InvokeRepeating(nameof(IncreaseDifficulty), 10f, difficultyIncreaseInterval);
+
+		while (true)
+		{
+			yield return new WaitForSeconds(asteroidSpawnInterval);
+			SpawnAsteroid();
+		}	
+
 	}
 
 	private void Update()
@@ -44,13 +51,13 @@ public class GameHandler : MonoBehaviour
 	private void IncreaseDifficulty()
 	{
 		Asteroid.speed = Mathf.Min(Asteroid.speed += .1f, 2f);
-		asteroidSpawnRate = Mathf.Max(asteroidSpawnRate -= .5f, 1f);
+		asteroidSpawnInterval = Mathf.Max(asteroidSpawnInterval -= .5f, 1f);
 		maxAsteroidCount++;
 	}
 
 	internal void NewGame()
 	{
-		asteroidSpawnRate = 3f;
+		asteroidSpawnInterval = 3f;
 		gameStartTime = Time.time;
 		time = 0f;
 
@@ -61,5 +68,7 @@ public class GameHandler : MonoBehaviour
 
 		foreach (Asteroid asteroid in (Asteroid[])FindObjectsOfType(typeof(Asteroid)))
 			Destroy(asteroid.gameObject);
+
+		GetComponent<AudioSource>().Play();
 	}
 }

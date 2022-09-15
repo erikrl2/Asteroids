@@ -51,6 +51,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   explosionPrefab: {fileID: 2072603291935368879, guid: 258a9cc16985db243b3054f835d8f223, type: 3}
+  maxHP: 1000
 --- !u!114 &4969698768348008974
 MonoBehaviour:
   m_ObjectHideFlags: 0

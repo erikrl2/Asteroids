@@ -22,12 +22,14 @@ public class Cannon : MonoBehaviour
 		allowFire = false;
 
 		GetComponent<Animator>().Play("Fire");
-		Rigidbody2D bullet = Instantiate(projectile, transform.position, transform.rotation);
+		GetComponent<AudioSource>().Play();
 
-		var player = GetComponentInParent<Rigidbody2D>();
-		bullet.velocity = (player.velocity.magnitude + bulletSpeed) * Player.forwardDir;
+		Rigidbody2D bullet = Instantiate(projectile, transform.position, transform.rotation);
+		float playerSpeed = GetComponentInParent<Rigidbody2D>().velocity.magnitude;
+		bullet.velocity = (playerSpeed + bulletSpeed) * Player.forwardDir;
 
 		yield return new WaitForSeconds(1f / fireRate);
+
 		allowFire = true;
 	}
 }

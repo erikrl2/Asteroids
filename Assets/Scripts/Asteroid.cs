@@ -8,11 +8,10 @@ public class Asteroid : MonoBehaviour
     public int maxHP = 1000;
 
     private int hp;
-
-	internal static float speed = 1.5f;
-
     private Animator animator;
     private AsteroidHealthbar healthBar;
+
+	internal static float speed = 1.5f;
 
     private void Awake()
     {
@@ -42,12 +41,7 @@ public class Asteroid : MonoBehaviour
             Player.score++;
 		}
 
-        Camera cam = Camera.main;
-		Vector2 target = cam.transform.position;
-		float distToPlayerSqr = (target - (Vector2)transform.position).sqrMagnitude;
-        float halfCamWidth = cam.orthographicSize * cam.aspect;
-        if (distToPlayerSqr > halfCamWidth * halfCamWidth * 3f)
-            Destroy(gameObject);
+        DestroyIfTooFar();
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -98,5 +92,15 @@ public class Asteroid : MonoBehaviour
 
             yield return new WaitForSeconds(.5f);
         }
+    }
+
+    private void DestroyIfTooFar()
+    {
+        Camera cam = Camera.main;
+		Vector2 target = cam.transform.position;
+		float distToPlayerSqr = (target - (Vector2)transform.position).sqrMagnitude;
+        float halfCamWidth = cam.orthographicSize * cam.aspect;
+        if (distToPlayerSqr > halfCamWidth * halfCamWidth * 3f)
+            Destroy(gameObject);
     }
 }

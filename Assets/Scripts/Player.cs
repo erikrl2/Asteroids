@@ -8,6 +8,7 @@ public class Player : MonoBehaviour
     [SerializeField] private Animator thrustFire;
 
     private Rigidbody2D rb;
+    private bool boost;
 
 	internal static int lives = 3;
 	internal static int score = 0;
@@ -23,9 +24,9 @@ public class Player : MonoBehaviour
     {
         CalculateForwardDir();
 
-        if (Input.GetKey(KeyCode.W))
+        if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.UpArrow))
         {
-            rb.AddForce(speed * forwardDir);
+            boost = true;
 			thrustFire.SetBool("Boosting", true);
         }
         else
@@ -42,13 +43,18 @@ public class Player : MonoBehaviour
 
     private void FixedUpdate()
     {
+        if (boost)
+        {
+            rb.AddForce(speed * forwardDir);
+            boost = false;
+        }
         rb.rotation += rotationSpeed * -Input.GetAxisRaw("Horizontal");
     }
 
     private void CalculateForwardDir()
     {
-        float angle = Mathf.Deg2Rad * (rb.rotation + 90f);
-        Player.forwardDir = new Vector2(Mathf.Cos(angle), Mathf.Sin(angle)).normalized;
+        float angle = (rb.rotation + 90f) * Mathf.Deg2Rad;
+        forwardDir = new Vector2(Mathf.Cos(angle), Mathf.Sin(angle));
     }
 
 	internal void IsHit()

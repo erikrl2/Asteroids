@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 0926b6e5fdbcb8c42b48f443b7d4be37
+guid: 35a6005555981a945b6416e89f4083bb
 TrueTypeFontImporter:
   externalObjects: {}
   serializedVersion: 4
@@ -9,7 +9,7 @@ TrueTypeFontImporter:
   characterPadding: 1
   includeFontData: 1
   fontNames:
-  - Roboto
+  - Summer Pixel 22
   fallbackFontReferences: []
   customCharacters: 
   fontRenderingMode: 0
